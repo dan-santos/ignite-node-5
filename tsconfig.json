@@ -11,7 +11,15 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@forum-entities/*": ["./src/domain/forum/enterprise/entities/*"],
+      "@notification-entities/*": ["./src/domain/notification/enterprise/entities/*"],
+      "@forum-repositories/*": ["./src/domain/forum/application/repositories/*"],
+      "@notification-repositories/*": ["./src/domain/notification/application/repositories/*"],
+      "@prisma-repositories/*": ["./src/infra/database/prisma/repositories/*"],
+      "@forum-use-cases/*": ["./src/domain/forum/application/use-cases/*"],
+      "@notification-use-cases/*": ["./src/domain/notification/application/use-cases/*"],
+      "@controllers/*": ["./src/infra/http/controllers/*"],
     },
     "incremental": true,
     "skipLibCheck": true,
