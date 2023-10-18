@@ -5,6 +5,10 @@ import { CreateQuestionController } from './controllers/create-question.controll
 import { FetchRecentQuestionsController } from './controllers/fetch-recent-questions.controller';
 import { DatabaseModule } from '../database/database.module';
 import { CreateQuestionUseCase } from '@forum-use-cases/create-question';
+import { FetchRecentQuestionsUseCase } from '@forum-use-cases/fetch-recent-questions';
+import { RegisterStudentUseCase } from '@forum-use-cases/register-student';
+import { AuthenticateStudentUseCase } from '@forum-use-cases/authenticate-student';
+import { CryptographyModule } from '../cryptography/cryptography.module';
 
 @Module({
   controllers: [
@@ -14,10 +18,14 @@ import { CreateQuestionUseCase } from '@forum-use-cases/create-question';
     FetchRecentQuestionsController
   ],
   providers: [
-    CreateQuestionUseCase
+    CreateQuestionUseCase,
+    FetchRecentQuestionsUseCase,
+    RegisterStudentUseCase,
+    AuthenticateStudentUseCase
   ],
   imports: [
-    DatabaseModule
+    DatabaseModule,
+    CryptographyModule
   ]
 })
 export class HttpModule {}

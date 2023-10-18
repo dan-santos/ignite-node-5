@@ -11,3 +11,15 @@ export class ForbiddenError extends Error implements UseCaseError {
     super('Forbidden');
   }
 }
+
+export class ConflictError extends Error implements UseCaseError {
+  constructor() {
+    super('Resource already exists');
+  }
+}
+
+export class WrongCredentialsError extends Error implements UseCaseError {
+  constructor() {
+    super('Wrong Credentials');
+  }
+}
