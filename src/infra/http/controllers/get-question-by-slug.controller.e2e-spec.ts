@@ -1,3 +1,4 @@
+import { Slug } from '@/domain/forum/enterprise/entities/value-objects/slug';
 import { AppModule } from '@/infra/app.module';
 import { DatabaseModule } from '@/infra/database/database.module';
 import { INestApplication } from '@nestjs/common';
@@ -7,7 +8,7 @@ import request from 'supertest';
 import { QuestionFactory } from 'test/factories/make-question';
 import { StudentFactory } from 'test/factories/make-student';
 
-describe('[e2e] fetch recent questions tests', () => {
+describe('[e2e] get question by slug tests', () => {
   let app: INestApplication;
   let jwt: JwtService;
   let studentFactory: StudentFactory;
@@ -16,7 +17,7 @@ describe('[e2e] fetch recent questions tests', () => {
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory]
+      providers: [StudentFactory, QuestionFactory],
     }).compile();
 
     app = moduleRef.createNestApplication();
@@ -27,37 +28,27 @@ describe('[e2e] fetch recent questions tests', () => {
     await app.init();
   });
 
-  it('[GET] /questions', async () => {
+  it('[GET] /questions:slug', async () => {
     const user = await studentFactory.makePrismaStudent();
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 
-    await Promise.all([
-      questionFactory.makePrismaQuestion(
-        {
-          title: 'Pergunta 1',
-          authorId: user.id
-        }
-      ),
-      questionFactory.makePrismaQuestion(
-        {
-          title: 'Pergunta 2',
-          authorId: user.id
-        }
-      ),
-    ]);
+    await questionFactory.makePrismaQuestion(
+      {
+        title: 'Pergunta 1',
+        slug: Slug.create('pergunta-1'),
+        authorId: user.id
+      }
+    );
 
     const response = await request(app.getHttpServer())
-      .get('/questions')
+      .get('/questions/pergunta-1')
       .set('Authorization', `Bearer ${accessToken}`)
       .send();
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
-      questions: [
-        expect.objectContaining({ title: 'Pergunta 2' }),
-        expect.objectContaining({ title: 'Pergunta 1' }),
-      ],
+      question: expect.objectContaining({ title: 'Pergunta 1' }),
     });
   });
 });
