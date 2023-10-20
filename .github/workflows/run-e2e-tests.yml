@@ -34,5 +34,6 @@ jobs:
 
       - run: npm run test:e2e
         env:
-          JWT_SECRET: testing-secret
+          JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+          JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
           DATABASE_URL: "postgresql://docker:docker@localhost:5432/dockerdb?schema=public"
