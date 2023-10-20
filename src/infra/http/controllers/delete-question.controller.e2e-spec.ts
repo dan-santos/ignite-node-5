@@ -7,7 +7,7 @@ import request from 'supertest';
 import { QuestionFactory } from 'test/factories/make-question';
 import { StudentFactory } from 'test/factories/make-student';
 
-describe('[e2e] fetch recent questions tests', () => {
+describe('[e2e] delete question tests', () => {
   let app: INestApplication;
   let jwt: JwtService;
   let studentFactory: StudentFactory;
@@ -27,37 +27,20 @@ describe('[e2e] fetch recent questions tests', () => {
     await app.init();
   });
 
-  it('[GET] /questions', async () => {
+  it('[DELETE] /questions/:id', async () => {
     const user = await studentFactory.makePrismaStudent();
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 
-    await Promise.all([
-      questionFactory.makePrismaQuestion(
-        {
-          title: 'Pergunta 1',
-          authorId: user.id
-        }
-      ),
-      questionFactory.makePrismaQuestion(
-        {
-          title: 'Pergunta 2',
-          authorId: user.id
-        }
-      ),
-    ]);
+    const createdQuestion = await questionFactory.makePrismaQuestion({
+      authorId: user.id
+    });
 
     const response = await request(app.getHttpServer())
-      .get('/questions')
+      .delete(`/questions/${createdQuestion.id.toString()}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send();
 
     expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual({
-      questions: expect.arrayContaining([
-        expect.objectContaining({ title: 'Pergunta 2' }),
-        expect.objectContaining({ title: 'Pergunta 1' }),
-      ]),
-    });
   });
 });

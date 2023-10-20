@@ -3,6 +3,7 @@ import { Question } from '@forum-entities/question';
 import { IQuestionsRepository } from '@forum-repositories/questions-repository';
 import { Either, left, right } from '@/core/either';
 import { ForbiddenError, ResourceNotFoundError } from '@/core/errors/custom-errors';
+import { Injectable } from '@nestjs/common';
 
 interface ChooseQuestionBestAnswerUseCaseRequest {
   authorId: string;
@@ -13,6 +14,7 @@ type ChooseQuestionBestAnswerUseCaseResponse = Either<ResourceNotFoundError | Fo
   question: Question;
 }>
 
+@Injectable()
 export class ChooseQuestionBestAnswerUseCase {
   constructor(
     private answersRepository: IAnswersRepository,

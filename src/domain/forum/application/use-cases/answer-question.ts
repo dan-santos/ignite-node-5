@@ -4,6 +4,7 @@ import { Answer } from '@forum-entities/answer';
 import { IAnswersRepository } from '@forum-repositories/answers-repository';
 import { AnswerAttachment } from '@forum-entities/answer-attachment';
 import { AnswerAttachmentList } from '@forum-entities/answer-attachment-list';
+import { Injectable } from '@nestjs/common';
 
 interface AnswerQuestionUseCaseRequest {
   authorId: string;
@@ -16,6 +17,7 @@ type AnswerQuestionUseCaseResponse = Either<null, {
   answer: Answer
 }>
 
+@Injectable()
 export class AnswerQuestionUseCase {
   constructor(
     private answersRepository: IAnswersRepository,

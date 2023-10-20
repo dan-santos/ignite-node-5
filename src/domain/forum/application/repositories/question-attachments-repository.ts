@@ -1,6 +1,6 @@
 import { QuestionAttachment } from '@forum-entities/question-attachment';
 
-export interface IQuestionAttachmentsRepository {
-  findManyByQuestionId(questionId: string): Promise<QuestionAttachment[]>;
-  deleteManyByQuestionId(questionId: string): Promise<void>;
+export abstract class IQuestionAttachmentsRepository {
+  abstract findManyByQuestionId(questionId: string): Promise<QuestionAttachment[]>;
+  abstract deleteManyByQuestionId(questionId: string): Promise<void>;
 }
