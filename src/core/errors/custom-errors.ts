@@ -23,3 +23,9 @@ export class WrongCredentialsError extends Error implements UseCaseError {
     super('Wrong Credentials');
   }
 }
+
+export class InvalidAttachmentTypeError extends Error implements UseCaseError {
+  constructor() {
+    super('File type is not valid');
+  }
+}
