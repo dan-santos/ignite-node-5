@@ -34,7 +34,7 @@ describe('[e2e] choose question best answer tests', () => {
   });
 
   it('[PATCH] /answers/:id/choose-as-best', async () => {
-    const user = await studentFactory.makePrismaStudent();
+    const user = await studentFactory.makeDatabaseStudent();
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 

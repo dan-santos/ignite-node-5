@@ -68,4 +68,33 @@ describe('Edit answer tests', () => {
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(ForbiddenError);
   });
+
+  it('should sync new and removed attachments when editing a answer', async () => {
+    const answerId = new UniqueEntityID();
+    const authorId = new UniqueEntityID();
+
+    const fakeAnswer = makeAnswer({ authorId }, answerId);
+    await answerRepository.create(fakeAnswer);
+
+    attachmentsRepository.items.push(
+      makeAnswerAttachment({
+        answerId: fakeAnswer.id,
+        attachmentId: new UniqueEntityID('1')
+      }),
+      makeAnswerAttachment({
+        answerId: fakeAnswer.id,
+        attachmentId: new UniqueEntityID('2')
+      })
+    );
+
+    const result = await sut.execute({
+      authorId: fakeAnswer.authorId.toString(),
+      answerId: fakeAnswer.id.toString(),
+      content: 'Edited content',
+      attachmentsIds: ['1', '3', '4']
+    });
+  
+    expect(result.isRight()).toBe(true);
+    expect(attachmentsRepository.items).toHaveLength(3);
+  });
 });

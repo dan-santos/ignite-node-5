@@ -1,7 +1,7 @@
 import { IAnswerCommentsRepository } from '@forum-repositories/answer-comments-repository';
-import { AnswerComment } from '@forum-entities/answer-comment';
 import { Either, right } from '@/core/either';
 import { Injectable } from '@nestjs/common';
+import { CommentWithAuthor } from '@forum-entities/value-objects/comment-with-author';
 
 interface FetchAnswerCommentsUseCaseRequest {
   page: number;
@@ -9,7 +9,7 @@ interface FetchAnswerCommentsUseCaseRequest {
 }
 
 type FetchAnswerCommentsUseCaseResponse = Either<null, {
-  comments: AnswerComment[];
+  comments: CommentWithAuthor[];
 }>
 
 @Injectable()
@@ -19,7 +19,7 @@ export class FetchAnswerCommentsUseCase {
   ){}
   async execute({ answerId, page }: FetchAnswerCommentsUseCaseRequest): 
     Promise<FetchAnswerCommentsUseCaseResponse> {
-    const comments = await this.answerCommentsRepository.findManyByAnswerId(answerId, { page });
+    const comments = await this.answerCommentsRepository.findManyByAnswerIdWithAuthor(answerId, { page });
 
     return right({ comments });
   }

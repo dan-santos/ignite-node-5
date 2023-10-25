@@ -37,7 +37,7 @@ describe('[e2e] comment on answer tests', () => {
   });
 
   it('[POST] /answers/:answerId/comments', async () => {
-    const user = await studentFactory.makePrismaStudent();
+    const user = await studentFactory.makeDatabaseStudent();
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 

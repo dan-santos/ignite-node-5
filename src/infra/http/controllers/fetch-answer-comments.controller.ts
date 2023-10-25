@@ -2,7 +2,7 @@ import { BadRequestException, Controller, Get, HttpCode, Param, Query } from '@n
 import { CurrentUser } from '@/infra/auth/current-user.decorator';
 import { UserPayload } from '@/infra/auth/jwt.strategy';
 import { FetchAnswerCommentsUseCase } from '@forum-use-cases/fetch-answer-comments';
-import { AnswerCommentPresenter } from '../presenters/answer-comment-presenter';
+import { CommentWithAuthorPresenter } from '../presenters/comment-with-author-presenter';
 
 @Controller('/answers/:answerId/comments/')
 export class FetchAnswerCommentsController {
@@ -26,6 +26,6 @@ export class FetchAnswerCommentsController {
 
     const comments = result.value.comments;
 
-    return { comments: comments.map(AnswerCommentPresenter.toHttp) };
+    return { comments: comments.map(CommentWithAuthorPresenter.toHttp) };
   }
 }

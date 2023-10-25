@@ -3,13 +3,16 @@ import { InMemoryQuestionCommentsRepository } from 'test/repositories/in-memory-
 import { DeleteQuestionCommentUseCase } from './delete-question-comment';
 import { makeQuestionComment } from 'test/factories/make-question-comment';
 import { ForbiddenError } from '@/core/errors/custom-errors';
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository';
 
+let studentsRepository: InMemoryStudentsRepository;
 let questionCommentsRepository: InMemoryQuestionCommentsRepository;
 let sut: DeleteQuestionCommentUseCase;
 
 describe('Delete comment on question tests', () => {
   beforeEach(() => {
-    questionCommentsRepository = new InMemoryQuestionCommentsRepository();
+    studentsRepository = new InMemoryStudentsRepository();
+    questionCommentsRepository = new InMemoryQuestionCommentsRepository(studentsRepository);
     sut = new DeleteQuestionCommentUseCase(questionCommentsRepository);
   });
 

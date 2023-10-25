@@ -4,10 +4,16 @@ import { Question } from '@forum-entities/question';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper';
+import { IQuestionAttachmentsRepository } from '@forum-repositories/question-attachments-repository';
+import { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details';
+import { PrismaQuestionDetailsMapper } from '../mappers/prisma-question-details-mapper';
 
 @Injectable()
 export class PrismaQuestionsRepository implements IQuestionsRepository {
-  constructor(private prisma: PrismaService){}
+  constructor(
+    private prisma: PrismaService,
+    private attachmentsRepository: IQuestionAttachmentsRepository  
+  ){}
 
   async create(question: Question): Promise<void> {
     const data = PrismaQuestionMapper.toDatabase(question);
@@ -15,6 +21,8 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
     await this.prisma.question.create({
       data,
     });
+
+    await this.attachmentsRepository.createMany(question.attachments.getItems());
   }
 
   async delete(question: Question): Promise<void> {
@@ -28,12 +36,16 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
   async save(question: Question): Promise<void> {
     const data = PrismaQuestionMapper.toDatabase(question);
 
-    await this.prisma.question.update({
-      where: {
-        id: data.id,
-      },
-      data,
-    });
+    await Promise.all([
+      this.prisma.question.update({
+        where: {
+          id: data.id,
+        },
+        data,
+      }),
+      this.attachmentsRepository.createMany(question.attachments.getNewItems()),
+      this.attachmentsRepository.deleteMany(question.attachments.getRemovedItems()),
+    ]);
   }
   
   async findBySlug(slug: string): Promise<Question | null> {
@@ -46,6 +58,22 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
     if (!question) return null;
 
     return PrismaQuestionMapper.toDomain(question);
+  }
+
+  async findDetailsBySlug(slug: string): Promise<QuestionDetails | null> {
+    const question = await this.prisma.question.findUnique({
+      where: {
+        slug,
+      },
+      include: {
+        author: true,
+        attachments: true
+      }
+    });
+
+    if (!question) return null;
+
+    return PrismaQuestionDetailsMapper.toDomain(question);
   }
 
   async findById(questionId: string): Promise<Question | null> {

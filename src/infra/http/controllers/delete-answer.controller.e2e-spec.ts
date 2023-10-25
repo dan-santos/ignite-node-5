@@ -31,7 +31,7 @@ describe('[e2e] delete answer tests', () => {
   });
 
   it('[DELETE] /answers/:id', async () => {
-    const user = await studentFactory.makePrismaStudent();
+    const user = await studentFactory.makeDatabaseStudent();
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 

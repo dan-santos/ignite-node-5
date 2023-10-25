@@ -31,7 +31,7 @@ describe('[e2e] fetch question answers tests', () => {
   });
 
   it('[GET] /questions/:questionId/answers', async () => {
-    const user = await studentFactory.makePrismaStudent();
+    const user = await studentFactory.makeDatabaseStudent();
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 

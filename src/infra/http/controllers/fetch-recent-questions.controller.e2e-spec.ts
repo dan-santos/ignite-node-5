@@ -28,7 +28,7 @@ describe('[e2e] fetch recent questions tests', () => {
   });
 
   it('[GET] /questions', async () => {
-    const user = await studentFactory.makePrismaStudent();
+    const user = await studentFactory.makeDatabaseStudent();
 
     const accessToken = jwt.sign({ sub: user.id.toString() });
 

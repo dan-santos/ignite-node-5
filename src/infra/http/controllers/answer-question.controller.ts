@@ -7,6 +7,7 @@ import { AnswerQuestionUseCase } from '@forum-use-cases/answer-question';
 
 const answerQuestionSchema = z.object({
   content: z.string(),
+  attachments: z.array(z.string().uuid()).default([])
 });
 type AnswerQuestionSchema = z.infer<typeof answerQuestionSchema>;
 
@@ -23,14 +24,14 @@ export class AnswerQuestionController {
     @Param('questionId') questionId: string,
     @Body(new ZodValidationPipe(answerQuestionSchema)) body: AnswerQuestionSchema
   ) {
-    const { content } = body;
+    const { content, attachments } = body;
     const userId = user.sub;
 
     const result = await this.answerQuestion.execute({ 
       authorId: userId,
       questionId,
       content,
-      attachmentsIds: []
+      attachmentsIds: attachments
     });
 
     if (result.isLeft()) throw new BadRequestException();

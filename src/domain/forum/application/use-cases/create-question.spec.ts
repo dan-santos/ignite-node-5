@@ -2,15 +2,25 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { CreateQuestionUseCase } from './create-question';
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository';
 import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository';
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository';
 
-let attachmentsRepository: InMemoryQuestionAttachmentsRepository;
+let attachments: InMemoryAttachmentsRepository;
+let studentsRepository: InMemoryStudentsRepository;
+let questionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
 let questionRepository: InMemoryQuestionsRepository;
 let sut: CreateQuestionUseCase;
 
 describe('Create question tests', () => {
   beforeEach(() => {
-    attachmentsRepository = new InMemoryQuestionAttachmentsRepository();
-    questionRepository = new InMemoryQuestionsRepository(attachmentsRepository);
+    attachments = new InMemoryAttachmentsRepository();
+    studentsRepository = new InMemoryStudentsRepository();
+    questionAttachmentsRepository = new InMemoryQuestionAttachmentsRepository();
+    questionRepository = new InMemoryQuestionsRepository(
+      questionAttachmentsRepository, 
+      attachments, 
+      studentsRepository
+    );
     sut = new CreateQuestionUseCase(questionRepository);
   });
 
@@ -29,5 +39,27 @@ describe('Create question tests', () => {
       expect.objectContaining({ attachmentId: new UniqueEntityID('1') }),
       expect.objectContaining({ attachmentId: new UniqueEntityID('2') }),
     ]);
+  });
+
+  it('should persist attachments when creating a new question', async () => {
+    const result = await sut.execute({
+      authorId: '1',
+      title: 'Pergunta?',
+      content: 'Não sei.',
+      attachmentsIds: ['1', '2'],
+    });
+  
+    expect(result.isRight()).toBe(true);
+    expect(questionAttachmentsRepository.items).toHaveLength(2);
+    expect(questionAttachmentsRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('1')
+        }),
+        expect.objectContaining({
+          attachmentId: new UniqueEntityID('2')
+        }),
+      ]),
+    );
   });
 });

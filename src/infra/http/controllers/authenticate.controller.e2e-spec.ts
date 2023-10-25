@@ -23,7 +23,7 @@ describe('[e2e] authentication tests', () => {
   });
 
   it('[POST] /sessions', async () => {
-    const user = await studentFactory.makePrismaStudent({
+    const user = await studentFactory.makeDatabaseStudent({
       email: 'f@mail.com',
       password: await hash('123456', 8),
     });

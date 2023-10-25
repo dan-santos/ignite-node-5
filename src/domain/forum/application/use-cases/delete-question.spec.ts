@@ -5,15 +5,25 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id';
 import { ForbiddenError } from '@/core/errors/custom-errors';
 import { InMemoryQuestionAttachmentsRepository } from 'test/repositories/in-memory-question-attachments-repository';
 import { makeQuestionAttachment } from 'test/factories/make-question-attachment';
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository';
+import { InMemoryStudentsRepository } from 'test/repositories/in-memory-students-repository';
 
+let attachments: InMemoryAttachmentsRepository;
+let studentsRepository: InMemoryStudentsRepository;
 let questionRepository: InMemoryQuestionsRepository;
-let attachmentsRepository: InMemoryQuestionAttachmentsRepository;
+let questionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
 let sut: DeleteQuestionUseCase;
 
 describe('Delete question tests', () => {
   beforeEach(() => {
-    attachmentsRepository = new InMemoryQuestionAttachmentsRepository();
-    questionRepository = new InMemoryQuestionsRepository(attachmentsRepository);
+    attachments = new InMemoryAttachmentsRepository();
+    studentsRepository = new InMemoryStudentsRepository();
+    questionAttachmentsRepository = new InMemoryQuestionAttachmentsRepository();
+    questionRepository = new InMemoryQuestionsRepository(
+      questionAttachmentsRepository, 
+      attachments, 
+      studentsRepository
+    );
     sut = new DeleteQuestionUseCase(questionRepository);
   });
 
@@ -24,7 +34,7 @@ describe('Delete question tests', () => {
     const fakeQuestion = makeQuestion({ authorId }, questionId);
     await questionRepository.create(fakeQuestion);
 
-    attachmentsRepository.items.push(
+    questionAttachmentsRepository.items.push(
       makeQuestionAttachment({
         questionId: fakeQuestion.id,
         attachmentId: new UniqueEntityID('1')
@@ -40,7 +50,7 @@ describe('Delete question tests', () => {
       authorId: authorId.toString()
     });
 
-    expect(attachmentsRepository.items).toHaveLength(0);
+    expect(questionAttachmentsRepository.items).toHaveLength(0);
     expect(questionRepository.items).toHaveLength(0);
   });
 
