@@ -27,10 +27,6 @@ jobs:
         image: bitnami/redis
         ports:
           - 6379:6379
-        env:
-          REDIS_DB: 1
-          REDIS_PORT: 6379
-          REDIS_HOST: nest-clean-cache
 
     steps:
       - uses: actions/checkout@v3
