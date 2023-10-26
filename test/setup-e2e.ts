@@ -13,6 +13,7 @@ const env = envSchema.parse(process.env);
 
 const prisma = new PrismaClient();
 const redis = new Redis({
+  family: 6,
   host: env.REDIS_HOST,
   port: env.REDIS_PORT,
   db: env.REDIS_DB
