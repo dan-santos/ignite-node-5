@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      api-gympass-db:
+      nest-clean-db:
         image: bitnami/postgresql
         ports:
           - 5432:5432
@@ -22,6 +22,11 @@ jobs:
           POSTGRESQL_USERNAME: docker
           POSTGRESQL_PASSWORD: docker
           POSTGRESQL_DATABASE: dockerdb
+      
+      nest-clean-cache:
+        image: bitnami/redis
+        ports:
+          - 6379:6379
 
     steps:
       - uses: actions/checkout@v3
@@ -40,4 +45,7 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          REDIS_DB: ${{ secrets.REDIS_DB }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
           DATABASE_URL: "postgresql://docker:docker@localhost:5432/dockerdb?schema=public"
