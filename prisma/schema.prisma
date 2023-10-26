@@ -13,15 +13,16 @@ enum Role {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
-  password  String
-  role      Role       @default(STUDENT)
-  
-  questions Question[]
-  answers   Answer[]
-  comments  Comment[]
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+  role     Role   @default(STUDENT)
+
+  questions     Question[]
+  answers       Answer[]
+  comments      Comment[]
+  notifications Notification[]
 
   @@map("users")
 }
@@ -42,7 +43,7 @@ model Question {
 
   answers Answer[]
 
-  comments   Comment[]
+  comments    Comment[]
   attachments Attachment[]
 
   @@map("questions")
@@ -62,7 +63,7 @@ model Answer {
   question   Question @relation(fields: [questionId], references: [id])
   questionId String   @map("question_id")
 
-  comments   Comment[]
+  comments    Comment[]
   attachemnts Attachment[]
 
   @@map("answers")
@@ -98,4 +99,17 @@ model Attachment {
   answerId String? @map("answer_id")
 
   @@map("attachments")
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  title     String
+  content   String
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  recipient   User   @relation(fields: [recipientId], references: [id])
+  recipientId String @map("recipient_id")
+
+  @@map("notifications")
 }

@@ -39,3 +39,4 @@ lerna-debug.log*
 .env.*
 data/
 *.http
+test/e2e/*

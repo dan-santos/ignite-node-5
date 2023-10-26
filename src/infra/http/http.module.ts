@@ -10,36 +10,38 @@ import { RegisterStudentUseCase } from '@forum-use-cases/register-student';
 import { AuthenticateStudentUseCase } from '@forum-use-cases/authenticate-student';
 import { CryptographyModule } from '../cryptography/cryptography.module';
 import { GetQuestionBySlugController } from './controllers/get-question-by-slug.controller';
-import { GetQuestionBySlugUseCase } from '@/domain/forum/application/use-cases/get-question-by-slug';
+import { GetQuestionBySlugUseCase } from '@forum-use-cases/get-question-by-slug';
 import { EditQuestionController } from './controllers/edit-question.controller';
-import { EditQuestionUseCase } from '@/domain/forum/application/use-cases/edit-question';
+import { EditQuestionUseCase } from '@forum-use-cases/edit-question';
 import { DeleteQuestionController } from './controllers/delete-question.controller';
-import { DeleteQuestionUseCase } from '@/domain/forum/application/use-cases/delete-question';
+import { DeleteQuestionUseCase } from '@forum-use-cases/delete-question';
 import { AnswerQuestionController } from './controllers/answer-question.controller';
-import { AnswerQuestionUseCase } from '@/domain/forum/application/use-cases/answer-question';
+import { AnswerQuestionUseCase } from '@forum-use-cases/answer-question';
 import { EditAnswerController } from './controllers/edit-answer.controller';
-import { EditAnswerUseCase } from '@/domain/forum/application/use-cases/edit-answer';
+import { EditAnswerUseCase } from '@forum-use-cases/edit-answer';
 import { DeleteAnswerController } from './controllers/delete-answer.controller';
-import { DeleteAnswerUseCase } from '@/domain/forum/application/use-cases/delete-answer';
+import { DeleteAnswerUseCase } from '@forum-use-cases/delete-answer';
 import { FetchQuestionAnswersController } from './controllers/fetch-question-answers.controller';
-import { FetchQuestionAnswersUseCase } from '@/domain/forum/application/use-cases/fetch-question-answers';
-import { ChooseQuestionBestAnswerUseCase } from '@/domain/forum/application/use-cases/choose-question-best-answer';
+import { FetchQuestionAnswersUseCase } from '@forum-use-cases/fetch-question-answers';
+import { ChooseQuestionBestAnswerUseCase } from '@forum-use-cases/choose-question-best-answer';
 import { ChooseQuestionBestAnswerController } from './controllers/choose-question-best-answer.controller';
 import { CommentOnQuestionController } from './controllers/comment-on-question.controller';
-import { CommentOnQuestionUseCase } from '@/domain/forum/application/use-cases/comment-on-question';
+import { CommentOnQuestionUseCase } from '@forum-use-cases/comment-on-question';
 import { CommentOnAnswerController } from './controllers/comment-on-answer.controller';
-import { CommentOnAnswerUseCase } from '@/domain/forum/application/use-cases/comment-on-answer';
-import { DeleteQuestionCommentUseCase } from '@/domain/forum/application/use-cases/delete-question-comment';
+import { CommentOnAnswerUseCase } from '@forum-use-cases/comment-on-answer';
+import { DeleteQuestionCommentUseCase } from '@forum-use-cases/delete-question-comment';
 import { DeleteQuestionCommentController } from './controllers/delete-question-comment.controller';
 import { DeleteAnswerCommentController } from './controllers/delete-answer-comment.controller';
-import { DeleteAnswerCommentUseCase } from '@/domain/forum/application/use-cases/delete-answer-comment';
+import { DeleteAnswerCommentUseCase } from '@forum-use-cases/delete-answer-comment';
 import { FetchQuestionCommentsController } from './controllers/fetch-question-comments.controller';
-import { FetchQuestionCommentsUseCase } from '@/domain/forum/application/use-cases/fetch-question-comments';
-import { FetchAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/fetch-answer-comments';
+import { FetchQuestionCommentsUseCase } from '@forum-use-cases/fetch-question-comments';
+import { FetchAnswerCommentsUseCase } from '@forum-use-cases/fetch-answer-comments';
 import { FetchAnswerCommentsController } from './controllers/fetch-answer-comments.controller';
 import { UploadAttachmentController } from './controllers/upload-attachment.controller';
 import { StorageModule } from '../storage/storage.module';
-import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use-cases/upload-and-create-attachment';
+import { UploadAndCreateAttachmentUseCase } from '@forum-use-cases/upload-and-create-attachment';
+import { ReadNotificationController } from './controllers/read-notification.controller';
+import { ReadNotificationUseCase } from '@notification-use-cases/read-notification';
 
 @Module({
   controllers: [
@@ -61,7 +63,8 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use
     DeleteAnswerCommentController,
     FetchQuestionCommentsController,
     FetchAnswerCommentsController,
-    UploadAttachmentController
+    UploadAttachmentController,
+    ReadNotificationController
   ],
   providers: [
     CreateQuestionUseCase,
@@ -82,7 +85,8 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/forum/application/use
     DeleteAnswerCommentUseCase,
     FetchQuestionCommentsUseCase,
     FetchAnswerCommentsUseCase,
-    UploadAndCreateAttachmentUseCase
+    UploadAndCreateAttachmentUseCase,
+    ReadNotificationUseCase
   ],
   imports: [
     DatabaseModule,

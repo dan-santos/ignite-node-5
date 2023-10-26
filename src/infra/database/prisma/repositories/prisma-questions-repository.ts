@@ -7,11 +7,14 @@ import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper';
 import { IQuestionAttachmentsRepository } from '@forum-repositories/question-attachments-repository';
 import { QuestionDetails } from '@/domain/forum/enterprise/entities/value-objects/question-details';
 import { PrismaQuestionDetailsMapper } from '../mappers/prisma-question-details-mapper';
+import { DomainEvents } from '@/core/events/domain-events';
+import { ICacheRepository } from '@/infra/cache/cache-repository';
 
 @Injectable()
 export class PrismaQuestionsRepository implements IQuestionsRepository {
   constructor(
     private prisma: PrismaService,
+    private cache: ICacheRepository,
     private attachmentsRepository: IQuestionAttachmentsRepository  
   ){}
 
@@ -23,6 +26,7 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
     });
 
     await this.attachmentsRepository.createMany(question.attachments.getItems());
+    DomainEvents.dispatchEventsForAggregate(question.id);
   }
 
   async delete(question: Question): Promise<void> {
@@ -45,7 +49,10 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
       }),
       this.attachmentsRepository.createMany(question.attachments.getNewItems()),
       this.attachmentsRepository.deleteMany(question.attachments.getRemovedItems()),
+      this.cache.delete(`question:${data.slug}:details`)
     ]);
+
+    DomainEvents.dispatchEventsForAggregate(question.id);
   }
   
   async findBySlug(slug: string): Promise<Question | null> {
@@ -61,6 +68,9 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
   }
 
   async findDetailsBySlug(slug: string): Promise<QuestionDetails | null> {
+    const cacheHit = await this.cache.get(`question:${slug}:details`);
+    if (cacheHit) return JSON.parse(cacheHit);
+
     const question = await this.prisma.question.findUnique({
       where: {
         slug,
@@ -73,7 +83,10 @@ export class PrismaQuestionsRepository implements IQuestionsRepository {
 
     if (!question) return null;
 
-    return PrismaQuestionDetailsMapper.toDomain(question);
+    const questionDetails = PrismaQuestionDetailsMapper.toDomain(question);
+    
+    await this.cache.set(`question:${slug}:details`, JSON.stringify(questionDetails));
+    return questionDetails;
   }
 
   async findById(questionId: string): Promise<Question | null> {
