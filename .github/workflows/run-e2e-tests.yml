@@ -27,7 +27,8 @@ jobs:
         image: bitnami/redis
         ports:
           - 6379:6379
-        options: --name nest-clean-cache
+        env:
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v3
