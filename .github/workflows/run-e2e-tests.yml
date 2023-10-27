@@ -49,4 +49,5 @@ jobs:
           REDIS_DB: ${{ secrets.REDIS_DB }}
           REDIS_PORT: ${{ secrets.REDIS_PORT }}
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           DATABASE_URL: "postgresql://docker:docker@localhost:5432/dockerdb?schema=public"
