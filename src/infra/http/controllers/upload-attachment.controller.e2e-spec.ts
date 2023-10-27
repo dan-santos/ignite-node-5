@@ -32,7 +32,7 @@ describe('[e2e] upload attachment tests', () => {
     const response = await request(app.getHttpServer())
       .post('/attachments')
       .set('Authorization', `Bearer ${accessToken}`)
-      .attach('file', './test/e2e/document.pdf');
+      .attach('file', './test/e2e/fake-document.pdf');
 
     expect(response.statusCode).toBe(201);
     expect(response.body).toEqual({
